@@ -1,0 +1,39 @@
+{
+  "name": "folonite.js",
+  "version": "1.0.24",
+  "description": "Folonite.js - The first lightweight framework that integrates dynamic server-side rendering (SSR), streaming capabilities, and an external component marketplace.",
+  "type": "module",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js",
+    "folonite": "node scripts/cli.js",
+    "marketplace": "node scripts/marketplace.js",
+    "init": "node scripts/init.cjs"
+  },
+  "keywords": [
+    "SSR",
+    "Streaming",
+    "JavaScript",
+    "Framework",
+    "Dynamic Components",
+    "Full-Stack",
+    "Built-in Marketplace"
+  ],
+  "author": "Folonite Labs",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.17.1",
+    "compression": "^1.7.4"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.7"
+  },
+  "files": [
+    "src/",
+    "scripts/",
+    "server.js",
+    "public/",
+    "templates/"
+  ]
+}
