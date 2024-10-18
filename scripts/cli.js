@@ -27,7 +27,21 @@ function installDependencies() {
   });
 }
 
-// Advanced Check for Outdated Dependencies
+// Function to install backend dependencies
+function installBackendDependencies() {
+  exec('npm install express compression', (err, stdout, stderr) => {
+    if (err) {
+      console.error(`Error installing backend dependencies: ${err.message}`);
+      return;
+    }
+    console.log(stdout);
+    if (stderr) {
+      console.error(stderr);
+    }
+  });
+}
+
+// Advanced check for outdated dependencies
 function checkOutdatedDependencies() {
   exec('npm outdated --json', (err, stdout, stderr) => {
     if (err && !stdout) {
@@ -55,7 +69,7 @@ function checkOutdatedDependencies() {
   });
 }
 
-// Advanced Clean Node Modules
+// Advanced clean node_modules
 function cleanNodeModules() {
   const rl = readline.createInterface({
     input: process.stdin,
@@ -82,7 +96,7 @@ function cleanNodeModules() {
   });
 }
 
-// Advanced Clear Cache
+// Advanced clear npm cache
 function clearCache() {
   const rl = readline.createInterface({
     input: process.stdin,
@@ -109,6 +123,17 @@ function clearCache() {
   });
 }
 
+// Function to toggle backend configuration
+function toggleBackend(enable) {
+  const configPath = path.resolve('./src/config.js');
+  const config = fs.readFileSync(configPath, 'utf-8').replace(
+    /backendEnabled: (true|false)/,
+    `backendEnabled: ${enable}`
+  );
+  fs.writeFileSync(configPath, config);
+  console.log(`Backend is now ${enable ? 'enabled' : 'disabled'}.`);
+}
+
 // Main CLI logic
 switch (args[0]) {
   case '--version':
@@ -118,6 +143,10 @@ switch (args[0]) {
 
   case 'dependencies':
     installDependencies();
+    break;
+
+  case 'backend:dependencies':
+    installBackendDependencies();
     break;
 
   case 'outdated':
@@ -132,13 +161,24 @@ switch (args[0]) {
     clearCache();
     break;
 
+  case 'enable:backend':
+    toggleBackend(true);
+    break;
+
+  case 'disable:backend':
+    toggleBackend(false);
+    break;
+
   default:
     console.log(`
 Usage:
   --version                 Check Folonite.js version
   dependencies              Auto-install project dependencies
+  backend:dependencies       Install backend dependencies (express, compression)
   outdated                  Check for outdated dependencies (with upgrade options)
   clean                     Clean node_modules and reinstall dependencies
   cache                     Clear npm cache
+  enable:backend             Enable backend integration
+  disable:backend            Disable backend integration
 `);
 }

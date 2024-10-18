@@ -1,7 +1,8 @@
+// src/pages/home.js
 export default function HomePage() {
   return `
-    <Component name="Header" />
-      
+    <Component name="Header" props='{"title":"Welcome to Folonite.js"}' />
+    <main>
       <section style="margin-bottom: 30px;">
         <p>
           Folonite.js is a product of <strong>Folonite Labs</strong>, a division under <strong>Folonite</strong>.
@@ -29,8 +30,8 @@ export default function HomePage() {
         <h2 style="font-size: 1.5rem;">Check Out the Documentation</h2>
         <p>For a detailed guide and documentation, visit <a href="https://fffstanza.github.io/Folonite.js-Doc/" target="_blank">Folonite.js Documentation</a>.</p>
       </section>
-     
     </main>
     <Component name="Footer" />
   `;
 }
+

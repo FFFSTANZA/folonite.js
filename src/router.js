@@ -1,12 +1,19 @@
 import express from 'express';
 import path from 'path';
 import fs from 'fs';
+import { pathToFileURL } from 'url';
 
 // Function to dynamically register routes based on files in the pages directory
 export function setupDynamicRouting(app) {
   const pagesDir = path.resolve('./src/pages');
 
+  // Helper function to walk through directories and set up routes
   const walkDirectory = (dir, routePrefix = '') => {
+    if (!fs.existsSync(dir)) {
+      console.error(`Pages directory not found: ${dir}`);
+      return;
+    }
+
     fs.readdirSync(dir).forEach((file) => {
       const filePath = path.join(dir, file);
       const stat = fs.statSync(filePath);
@@ -23,15 +30,30 @@ export function setupDynamicRouting(app) {
           route = routePrefix || '/'; // index.js -> root or directory root
         }
 
+        // Log the registered route for clarity
+        console.log(`Registering route: ${route} -> ${filePath}`);
+
         app.get(route, async (req, res, next) => {
           try {
-            const PageComponent = await import(filePath);
-            const content = PageComponent.default(req.params); // Pass req.params to the component
-            res.send(renderPageWrapper(route, content));
+            const pageUrl = pathToFileURL(filePath).href;
+            const PageComponent = await import(pageUrl);
+
+            // Check if the component has a default export
+            if (PageComponent && PageComponent.default) {
+              const content = PageComponent.default(req.params); // Pass req.params to the component
+              res.send(renderPageWrapper(route, content));
+            } else {
+              console.error(`No default export found in: ${filePath}`);
+              res.status(500).send('Server error: Page component missing default export');
+            }
+
           } catch (err) {
+            console.error(`Error loading route ${route}:`, err);
             next(err); // Pass error to the global error handler
           }
         });
+      } else {
+        console.warn(`Skipping non-JS file in pages directory: ${file}`);
       }
     });
   };
@@ -64,24 +86,7 @@ app.use((err, req, res, next) => {
 });
 
 // Start the server
-const port = process.env.PORT || 4000;  // Change to another port like 4000
+const port = process.env.PORT || 4000;
 app.listen(port, () => {
   console.log(`Folonite.js is running at http://localhost:${port}`);
 });
-
-
-/*
-app.get('/products/:id', async (req, res, next) => {
-  try {
-    const { id } = req.params;
-    if (isNaN(id)) {
-      throw new Error('Invalid Product ID');
-    }
-    const PageComponent = await import('./pages/products/[id].js');
-    const content = PageComponent.default(req.params);
-    res.send(renderPageWrapper(`/products/${id}`, content));
-  } catch (err) {
-    next(err); // Pass error to the global error handler
-  }
-});
-*/
