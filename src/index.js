@@ -18,10 +18,10 @@ app.get('*', async (req, res) => {
   try {
     if (useStreaming) {
       const stream = renderPageStream(page);
-      stream.pipe(res); // Stream the content to the client
+      stream.pipe(res); 
     } else {
       const html = await renderPage(page);
-      res.write(html); // Serve the full HTML from SSR
+      res.write(html); 
     }
   } catch (err) {
     res.status(404).send('Page not found');

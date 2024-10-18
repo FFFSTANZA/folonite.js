@@ -1,6 +1,6 @@
 {
   "name": "folonite.js",
-  "version": "1.0.24",
+  "version": "1.2.26",
   "description": "Folonite.js - The first lightweight framework that integrates dynamic server-side rendering (SSR), streaming capabilities, and an external component marketplace.",
   "type": "module",
   "main": "server.js",
@@ -23,10 +23,12 @@
   "author": "Folonite Labs",
   "license": "MIT",
   "dependencies": {
+    "compression": "^1.7.4",
     "express": "^4.17.1",
-    "compression": "^1.7.4"
+    "folonite.js": "^1.1.25"
   },
   "devDependencies": {
+    "jscodeshift": "^17.0.0",
     "nodemon": "^2.0.7"
   },
   "files": [
